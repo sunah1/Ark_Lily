@@ -5,133 +5,169 @@ using UnityEditor;
 
 namespace RailFollower
 {
+
+    [CanEditMultipleObjects]
     [CustomEditor(typeof(RF_Linker_Base))]
     public class Linker_Editor : Editor
     {
+        private void Awake()
+        {
+        }
+        void OnEnable()
+        {
+        }
+        void OnDisable()
+        {
+        }
+
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
             RF_Linker_Base linker = target as RF_Linker_Base;
-
-            if (linker)
             {
+                //do this first to make sure you have the latest version
+                //serializedObject.Update();
                 {
-                    EditorGUILayout.LabelField("※ Rail Linker - Create");
                     EditorGUILayout.Space();
+                    EditorGUILayout.LabelField("※ RailFollower - Link Create");
 
-                    EditorGUILayout.LabelField("LEFT-Linker");
-                    LinkerInspector(linker.LeftLink, RailAction.LEFT);
+                    if (GUILayout.Button("ADD Point & Path"))
+                        linker.AddPoint();
 
-                    EditorGUILayout.LabelField("RIGHT-Linker");
-                    LinkerInspector(linker.RightLink, RailAction.RIGHT);
-
-                    if (GUILayout.Button("Cut - Link"))
-                        linker.AddLink( RailAction.STOP );
-
-                    EditorGUI.EndDisabledGroup();
-
-
-                    //EditorGUILayout.IntSlider(0, 10, 0);
+                    AddPath_Button(ref linker);
                 }
             }
-
+            AssetDatabase.SaveAssets();
         }
-
-        void LinkerInspector(Linker_Line _linker, RailAction _action)
-        {
-            EditorGUILayout.BeginHorizontal();
-            {
-                if(null == _linker.Next)
-                    EditorGUILayout.ObjectField(null, typeof(RF_Linker_Base), false);
-                else
-                    EditorGUILayout.ObjectField(_linker.Next.Base, typeof(RF_Linker_Base), false);
-
-                EditorGUI.BeginDisabledGroup(null != _linker.Next);
-                {
-                    if (GUILayout.Button("ADD-POINT"))
-                        _linker.Base.AddLink(_action);
-                }
-                EditorGUI.EndDisabledGroup();
-            }
-            EditorGUILayout.EndHorizontal();
-
-            EditorGUILayout.BeginHorizontal();
-            {
-                EditorGUI.BeginDisabledGroup(null == _linker.Next);
-                {
-                    _linker.Tangent = EditorGUILayout.Vector3Field("Tangent", _linker.Tangent);
-                    if (GUILayout.Button("RESET"))
-                        _linker.Tangent = Vector3.zero;
-                }
-                EditorGUI.EndDisabledGroup();
-            }
-            EditorGUILayout.EndHorizontal();
-        }
-
-
 
         private void OnSceneGUI()
         {
-            RF_Linker_Base linker_object = target as RF_Linker_Base;
-            if(linker_object)
+            RF_Linker_Base linker = target as RF_Linker_Base;
             {
-
-                DrawMarkerPostion(linker_object, Color.green);
-                Handles.color = Color.white;
-
-                DrawLine(linker_object.LeftLink);
-                DrawLine(linker_object.RightLink);
-
-
-
+                DrawMarkerPostion(ref linker);
+                DrawPathLines(ref linker);
             }
-
         }
 
-        // https://answers.unity.com/questions/1139985/gizmosdrawline-thickens.html // 선두껍게 하려면 참조해서 코드 변경
-        void DrawMarkerPostion(in RF_Linker_Base _object, Color _color)
+        ///////////////////////////////////////////////////////////////////////
+        //###################################################################//
+        //###################################################################//
+        //###################################################################//
+        ///////////////////////////////////////////////////////////////////////
+        //OnInspectorGUI()
+
+        //EditorGUI.BeginChangeCheck();
+        //if (EditorGUI.EndChangeCheck())
+
+        RF_Linker_Base addPointTarget;
+        /// <summary>
+        /// 공간을 주고 그곳에 있을경우 추가
+        /// </summary>
+        void AddPath_Button(ref RF_Linker_Base linker)
         {
-            if(_object.transform.GetChild(0)){
-                Handles.color = _color;
-                Handles.DrawLine(_object.transform.position, _object.transform.GetChild(0).position);
+            EditorGUILayout.BeginHorizontal();
+            {
+                addPointTarget = (RF_Linker_Base)EditorGUILayout.ObjectField("TargetPoint", addPointTarget, typeof(RF_Linker_Base), true);
+                EditorGUI.BeginDisabledGroup( !addPointTarget );
+                {
+                    if (GUILayout.Button("ADD Path"))
+                    {
+                        EditorUtility.SetDirty( linker.AddPath(ref addPointTarget) );
+                        addPointTarget = null;
+                    }
+                }
+                EditorGUI.EndDisabledGroup();
             }
-
+            EditorGUILayout.EndHorizontal();
         }
-        const float LineGaps = 10.0f;
-        void DrawLine(Linker_Line _Line)
+
+
+        ///////////////////////////////////////////////////////////////////////
+        //###################################################################//
+        //###################################################################//
+        //###################################################################//
+        ///////////////////////////////////////////////////////////////////////
+        //OnSceneGUI()
+        private static readonly float c_LineGaps = 8.0f;
+        private static readonly float c_PointHeight = 2.0f;
+        private static readonly float c_PointRadius = 0.7f;
+        //Handles.Slider(_Line.Base.transform.position, _Line.Tangent);
+
+
+        /// <summary>
+        /// 포인트를 선택했을때 시작 중점을 보여주는 용도
+        /// </summary>
+        void DrawMarkerPostion(ref RF_Linker_Base linker)
         {
-            if (null == _Line.Next)
-                return;
-            DrawMarkerPostion(_Line.Next.Base, Color.red);
+            Handles.color = Color.green;
 
-            Handles.color = Color.yellow;
-            if (_Line.Tangent != Vector3.zero)
-            {
-                Handles.Slider(_Line.Base.transform.position, _Line.Tangent);
-
-
-                Handles.DrawBezier(
-                    _Line.Base.transform.position
-                    , _Line.Next.Base.transform.position
-                    , _Line.Tangent
-                    , _Line.Next.Tangent
-                    , Color.white
-                    , null
-                    , 1
-                    );
-            }
-            else
-            {
-                Handles.color = Color.white;
-                Handles.DrawDottedLine(_Line.Next.Base.transform.position, _Line.Base.transform.position, LineGaps);
-            }
-
-
-            //Handles.DrawLine();
+            Handles.DrawWireDisc(linker.transform.position, Vector3.up, c_PointRadius);
+            Handles.DrawLine(linker.transform.position, linker.transform.position + (Vector3.up * c_PointHeight));
         }
 
 
+        /// <summary>
+        /// 포인트를 선택했을때 이동하는 길들을 보여주는 용도
+        /// </summary>
+        void DrawPathLines(ref RF_Linker_Base linker)
+        {
+            Handles.color = Color.white;
 
+            for (int iter = 1; iter < linker.transform.childCount; ++iter)
+            {
+                var TempLine = linker.transform.GetChild(iter).GetComponent<RF_Linker_Line>();
+                if (TempLine)
+                if (TempLine.Next)
+                {
+                    Handles.DrawDottedLine(linker.transform.position, TempLine.Next.transform.parent.position, c_LineGaps);
+                    Handles.Label(
+                        linker.transform.position + (TempLine.Next.transform.parent.position- linker.transform.position).normalized
+                        , "Path:" + iter + " Len:"+ TempLine.PathLength
+                        );
+                }
+            }
+        }
+
+        /*
+         if(EditorUtility.DisplayDialog("Are you sure?"
+        ,"The Prefab already exists. Do you want to overwrite it?"
+        ,"Yes"
+        ,"No"))
+             Debug.Log("ok");
+         else
+             Debug.Log("cancel");
+
+
+          EditorGUILayout.IntSlider(0, 10, 0);
+
+
+          Handles.Slider(_Line.Base.transform.position, _Line.Tangent);
+
+                    Handles.DrawBezier(
+                        _Line.Base.transform.position
+                        , _Line.Next.Base.transform.position
+                        , _Line.Tangent
+                        , _Line.Next.Tangent
+                        , Color.white
+                        , null
+                        , 1
+                        );
+
+        void TangentHandle(ref Linker_Line _Line)
+        {
+            //Vector3 tempPostion = _Line.Base.transform.position + _Line.Tangent;
+            Quaternion tempRoatation = Quaternion.identity;
+            //_Line.Base.transform.rotation
+
+            EditorGUI.BeginChangeCheck();
+            tempRoatation = Handles.DoRotationHandle(tempRoatation, _Line.Base.transform.position);
+            if (EditorGUI.EndChangeCheck())
+            {
+                _Line.Tangent = tempRoatation * _Line.Tangent;
+                EditorUtility.SetDirty(_Line);
+            }
+        }
+        */
 
 
     }

@@ -6,63 +6,55 @@ using UnityEditor;
 
 namespace RailFollower
 {
-    [System.Serializable]
-    public class Linker_Line
+    /// <summary>
+    /// 부모가 RF_Linker_Base여야 작동을 한다.
+    /// </summary>
+    [ExecuteInEditMode]
+    public class RF_Linker_Line : MonoBehaviour
     {
-        //private float _Length;
-        //public float Length { get => _Length; protected set => _Length = value; }
-        public RF_Linker_Base Base;
-        public Linker_Line Next;
-        public Vector3 Tangent = Vector3.zero;
+        //private float Path_Length;
+        //public float PathLength { get => Path_Length; protected set => Path_Length = value; }
+        public float PathLength { get; protected set; }
 
-        public Linker_Line(RF_Linker_Base _base)
-        {
-            Base = _base;
-            Tangent = Vector3.zero;
-        }
-        public void Reset()
-        {
-            Next = null;
-            Tangent = Vector3.zero;
+        public RF_Linker_Line Next;
+        public Vector3 Tangent{
+            set { transform.position = value; }
+            get { return transform.position; }
         }
 
-        public void SetLink_Left(RF_Linker_Base _src, ref RF_Linker_Base _dest)
+        void Update()
         {
-            Next = _dest.LeftLink;
-            _dest.RightLink.Next = _src.LeftLink;
-            Tangent = Vector3.zero;
+            if (!Application.isPlaying)
+            {
+                if (transform.hasChanged)
+                {
+                    ChangeTransform();
+                    Debug.Log(this.name + " transform has changed!");
+                    transform.hasChanged = false;
+                }
+            }
         }
-        public void SetLink_Right(RF_Linker_Base _src, ref RF_Linker_Base _dest)
+
+#if UNITY_EDITOR
+        ///////////////////////////////////////////////////////////////////////
+        //###################################################################//
+        //###################################################################//
+        //###################################################################//
+        ///////////////////////////////////////////////////////////////////////
+        public void ChangeTransform(float _Length = -1.0f)
         {
-            Next = _dest.RightLink;
-            _dest.LeftLink.Next = _src.RightLink;
-            Tangent = Vector3.zero;
+            if(Next)
+            {
+                if (_Length >= 0)
+                    PathLength = _Length;
+                else
+                {
+                    PathLength = (Next.transform.parent.position - transform.parent.position).magnitude;
+                    Next.ChangeTransform(PathLength);
+                }
+            }
         }
 
-
-
-
+#endif
     }
-    [CustomEditor(typeof(RF_Linker_Base))]
-    public class Linker_Line_Editor : Editor
-    {
-        public override void OnInspectorGUI()
-        {
-            base.OnInspectorGUI();
-            RF_Linker_Base linker = target as RF_Linker_Base;
-
-
-            EditorGUILayout.LabelField("※ Rail ");
-            EditorGUILayout.BeginHorizontal();
-
-            //EditorGUI.BeginDisabledGroup(linker.LeftLink.Next);
-
-
-        }
-
-
-
-    }
-
-
 }

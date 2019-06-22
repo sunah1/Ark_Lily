@@ -21,6 +21,10 @@
         }
 
 
+핸들들
+https://docs.unity3d.com/ScriptReference/Handles.html
+
+
 
 
 방향설정 셋팅을 했으니 좀 휘게 해주자.
@@ -97,3 +101,43 @@ https://docs.unity3d.com/kr/530/Manual/DirectionDistanceFromOneObjectToAnother.h
 //https://sites.google.com/site/unity3dstudy/home/unity3d-curriculum/unity---c/4
 
 https://docs.unity3d.com/kr/current/Manual/class-Skybox.html
+
+
+
+
+=======================
+https://docs.unity3d.com/ScriptReference/SerializedProperty.html
+https://docs.unity3d.com/ScriptReference/SerializedObject.html
+
+
+
+https://docs.microsoft.com/ko-kr/dotnet/csharp/programming-guide/statements-expressions-operators/how-to-define-valueequality-for-a-type
+https://docs.microsoft.com/ko-kr/dotnet/csharp/programming-guide/classes-and-structs/using-properties
+
+
+
+
+https://docs.unity3d.com/kr/current/Manual/RunningEditorCodeOnLaunch.html
+https://docs.unity3d.com/kr/current/Manual/script-Serialization.html
+https://docs.unity3d.com/kr/current/ScriptReference/SerializeField.html
+
+https://chameleonstudio.tistory.com/56
+
+
+# 에디터
+
+[에디터](https://docs.unity3d.com/kr/current/ScriptReference/Editor.html)
+
+[선두껍게 하려면 참조해서 코드 변경](https://answers.unity.com/questions/1139985/gizmosdrawline-thickens.html)
+
+
+# 잡다한거
+
+[널 레퍼런스 참조](https://docs.unity3d.com/kr/current/Manual/NullReferenceException.html)
+
+
+
+# 찾아볼만한거 많은 곳들
+
+[외국 블로그](http://www.ryan-meier.com/blog/?p=67)
+[정리만 해둔 플로그](https://smilejsu.tistory.com/1001)

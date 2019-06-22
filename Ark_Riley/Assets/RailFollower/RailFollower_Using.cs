@@ -21,9 +21,6 @@ namespace RailFollower
         }
     }
 
-    public enum RailAction
-    {
-        STOP,LEFT,RIGHT,
 
-    }
 }
+
