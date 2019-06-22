@@ -60,3 +60,8 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
+Ark_Riley/Library/
+Ark_Riley/Logs/
+Ark_Riley/obj/
+Ark_Riley/Packages/
+Ark_Riley/Temp/
