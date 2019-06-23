@@ -38,11 +38,11 @@ namespace RailFollower
             {
                 for (int iter = 1; iter < transform.childCount; ++iter)
                 {
-                    var TempLine = transform.GetChild(iter).GetComponent<RF_Linker_Line>();
+                    var TempLine = transform.GetChild(iter).GetComponent<RF_Linker_Path>();
                     if (TempLine && TempLine.Next)
                         DestroyImmediate(TempLine.Next.gameObject);
                 }
-                Debug.Log(this.name + " is destroyed");
+                //Debug.Log(this.name + " is destroyed");
             }
         }
 
@@ -67,7 +67,7 @@ namespace RailFollower
         */
 
 
-        const string localPath = "Assets/RailFollower/RailFollower_Linkers/RAIL_Point.prefab";
+        const string localPath = "Assets/RailFollower/RailFollower_Object/RAIL_Point.prefab";
         /// <summary>
         /// 진행 점을 추가
         /// </summary>
@@ -96,30 +96,29 @@ namespace RailFollower
         /// <summary>
         /// 진행 가능 방향 추가
         /// </summary>
-        public RF_Linker_Line AddPath()
+        public RF_Linker_Path AddPath()
         {
-            RF_Linker_Line temp_Path = (new GameObject("NewPath" + transform.childCount)).AddComponent(typeof(RF_Linker_Line)) as RF_Linker_Line;
+            RF_Linker_Path temp_Path = (new GameObject("NewPath" + transform.childCount)).AddComponent(typeof(RF_Linker_Path)) as RF_Linker_Path;
             temp_Path.transform.SetParent(transform);
-
-
+            temp_Path.transform.localPosition = Vector3.zero;
             return temp_Path;
         }
-        public RF_Linker_Line AddPath(ref RF_Linker_Line _Line)
+        public RF_Linker_Path AddPath(ref RF_Linker_Path _Line)
         {
-            RF_Linker_Line temp_Path = AddPath();
+            RF_Linker_Path temp_Path = AddPath();
             temp_Path.Next = _Line;
             return temp_Path;
         }
 
-        public RF_Linker_Line AddPath(ref RF_Linker_Base _Linker)
+        public RF_Linker_Path AddPath(ref RF_Linker_Base _Linker)
         {
-            RF_Linker_Line temp_Path = AddPath();
+            RF_Linker_Path temp_Path = AddPath();
             temp_Path.Next = _Linker.AddPath(ref temp_Path);
             return temp_Path;
         }
 
 
-        
+
 #endif
 
     }

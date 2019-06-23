@@ -45,7 +45,7 @@ namespace RailFollower
             RF_Linker_Base linker = target as RF_Linker_Base;
             {
                 DrawMarkerPostion(ref linker);
-                DrawPathLines(ref linker);
+                DrawPathLines(ref linker,DrawMode.Curve);
             }
         }
 
@@ -88,9 +88,7 @@ namespace RailFollower
         //###################################################################//
         ///////////////////////////////////////////////////////////////////////
         //OnSceneGUI()
-        private static readonly float c_LineGaps = 8.0f;
-        private static readonly float c_PointHeight = 2.0f;
-        private static readonly float c_PointRadius = 0.7f;
+
         //Handles.Slider(_Line.Base.transform.position, _Line.Tangent);
 
 
@@ -101,30 +99,33 @@ namespace RailFollower
         {
             Handles.color = Color.green;
 
-            Handles.DrawWireDisc(linker.transform.position, Vector3.up, c_PointRadius);
-            Handles.DrawLine(linker.transform.position, linker.transform.position + (Vector3.up * c_PointHeight));
+
+            Handles.DrawWireDisc(linker.transform.position, Vector3.up, ConstValue.PointRadius);
+            Handles.DrawLine(linker.transform.position, linker.transform.position + (Vector3.up * ConstValue.PointHeight));
         }
+
+
+
+        ///////////////////////////////////////////////////////////////////////
+        //###################################################################//
+        //###################################################################//
+        //###################################################################//
+        ///////////////////////////////////////////////////////////////////////
+        //static //OnSceneGUI()
+
+
 
 
         /// <summary>
         /// 포인트를 선택했을때 이동하는 길들을 보여주는 용도
         /// </summary>
-        void DrawPathLines(ref RF_Linker_Base linker)
+        static public void DrawPathLines(ref RF_Linker_Base linker,DrawMode _mode)
         {
-            Handles.color = Color.white;
-
             for (int iter = 1; iter < linker.transform.childCount; ++iter)
             {
-                var TempLine = linker.transform.GetChild(iter).GetComponent<RF_Linker_Line>();
-                if (TempLine)
-                if (TempLine.Next)
-                {
-                    Handles.DrawDottedLine(linker.transform.position, TempLine.Next.transform.parent.position, c_LineGaps);
-                    Handles.Label(
-                        linker.transform.position + (TempLine.Next.transform.parent.position- linker.transform.position).normalized
-                        , "Path:" + iter + " Len:"+ TempLine.PathLength
-                        );
-                }
+                var TempLine = linker.transform.GetChild(iter).GetComponent<RF_Linker_Path>();
+                if (TempLine && TempLine.Next)
+                    Linker_Path_Editor.DrawPathData(ref TempLine, _mode, "Path:" + iter);
             }
         }
 
@@ -141,7 +142,6 @@ namespace RailFollower
           EditorGUILayout.IntSlider(0, 10, 0);
 
 
-          Handles.Slider(_Line.Base.transform.position, _Line.Tangent);
 
                     Handles.DrawBezier(
                         _Line.Base.transform.position

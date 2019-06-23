@@ -62,9 +62,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\RailFollower\RailFollower_Linkers\RF_Linker_Base.cs" />
-    <Compile Include="Assets\RailFollower\RailFollower_Linkers\RF_Linker_Editor.cs" />
-    <Compile Include="Assets\RailFollower\RailFollower_Linkers\RF_Linker_Line.cs" />
+    <Compile Include="Assets\BillboardingObject\BillboardingObject_Base.cs" />
+    <Compile Include="Assets\RailFollower\RailFollower_Object\RF_Linker_Base.cs" />
+    <Compile Include="Assets\RailFollower\RailFollower_Object\RF_Linker_Editor.cs" />
+    <Compile Include="Assets\RailFollower\RailFollower_Object\RF_Linker_Path.cs" />
+    <Compile Include="Assets\RailFollower\RailFollower_Object\RF_Linker_Path_Editor.cs" />
+    <Compile Include="Assets\RailFollower\RailFollower_Train\RF_Follower_Base.cs" />
+    <Compile Include="Assets\RailFollower\RailFollower_Train\RF_Follower_Editor.cs" />
     <Compile Include="Assets\RailFollower\RailFollower_Using.cs" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/MyStudy/NDM2019/Ark_Riley/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
